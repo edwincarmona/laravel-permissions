@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\User;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
@@ -38,9 +39,12 @@ class UsersController extends Controller
         if (! Gate::allows('users_manage')) {
             return abort(401);
         }
-        $roles = Role::get()->pluck('name', 'name');
 
-        return view('admin.users.create', compact('roles'));
+        $roles = Role::get()->pluck('name', 'name');
+        $permissions = Permission::select('id', 'name')
+                                      ->pluck('name', 'id');
+
+        return view('admin.users.create', compact('roles', 'permissions'));
     }
 
     /**
@@ -54,9 +58,19 @@ class UsersController extends Controller
         if (! Gate::allows('users_manage')) {
             return abort(401);
         }
+        
         $user = User::create($request->all());
         $roles = $request->input('roles') ? $request->input('roles') : [];
         $user->assignRole($roles);
+        $permissions = $request->input('permission') ? $request->input('permission') : [];
+
+        if (sizeof($permissions) > 0) {
+            $user->syncPermissions(array());
+            
+            foreach ($permissions as $value) {
+                $user->givePermissionTo(Permission::find(intval($value)));
+            }
+        }
 
         return redirect()->route('admin.users.index');
     }
@@ -73,11 +87,14 @@ class UsersController extends Controller
         if (! Gate::allows('users_manage')) {
             return abort(401);
         }
+
         $roles = Role::get()->pluck('name', 'name');
+        $permissions = Permission::select('id', 'name')
+                                      ->pluck('name', 'id');
 
         $user = User::findOrFail($id);
 
-        return view('admin.users.edit', compact('user', 'roles'));
+        return view('admin.users.edit', compact('user', 'roles', 'permissions'));
     }
 
     /**
@@ -96,6 +113,16 @@ class UsersController extends Controller
         $user->update($request->all());
         $roles = $request->input('roles') ? $request->input('roles') : [];
         $user->syncRoles($roles);
+
+        $permissions = $request->input('permission') ? $request->input('permission') : [];
+
+        if (sizeof($permissions) > 0) {
+            $user->syncPermissions(array());
+            
+            foreach ($permissions as $value) {
+                $user->givePermissionTo(Permission::find(intval($value)));
+            }
+        }
 
         return redirect()->route('admin.users.index');
     }

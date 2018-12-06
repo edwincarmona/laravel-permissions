@@ -2,7 +2,7 @@
 
 @section('content')
     <h3 class="page-title">@lang('global.users.title')</h3>
-    
+
     {!! Form::model($user, ['method' => 'PUT', 'route' => ['admin.users.update', $user->id]]) !!}
 
     <div class="panel panel-default">
@@ -49,8 +49,8 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('roles', 'Roles*', ['class' => 'control-label']) !!}
-                    {!! Form::select('roles[]', $roles, old('roles') ? old('roles') : $user->roles()->pluck('name', 'name'), ['class' => 'form-control select2', 'multiple' => 'multiple', 'required' => '']) !!}
+                    {!! Form::label('roles', 'Roles', ['class' => 'control-label']) !!}
+                    {!! Form::select('roles[]', $roles, old('roles') ? old('roles') : $user->roles()->pluck('name', 'name'), ['class' => 'form-control select2', 'multiple' => 'multiple']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('roles'))
                         <p class="help-block">
@@ -59,11 +59,23 @@
                     @endif
                 </div>
             </div>
-            
+            <div class="row">
+              <div class="col-xs-12 form-group">
+                  {!! Form::label('permission', 'Permissions', ['class' => 'control-label']) !!}
+                  {!! Form::select('permission[]', $permissions, $user->getAllPermissions()->pluck('id'),
+                                        ['class' => 'form-control select2', 'multiple' => 'multiple']) !!}
+                  <p class="help-block"></p>
+                  @if($errors->has('permission'))
+                      <p class="help-block">
+                          {{ $errors->first('permission') }}
+                      </p>
+                  @endif
+              </div>
+            </div>
+
         </div>
     </div>
 
     {!! Form::submit(trans('global.app_update'), ['class' => 'btn btn-danger']) !!}
     {!! Form::close() !!}
 @stop
-

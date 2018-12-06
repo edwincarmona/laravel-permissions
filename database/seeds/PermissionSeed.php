@@ -13,5 +13,21 @@ class PermissionSeed extends Seeder
     public function run()
     {
         Permission::create(['name' => 'users_manage']);
+
+        Permission::create(['guard_name' => 'productos', 'name' => 'lector']);
+        Permission::create(['guard_name' => 'productos', 'name' => 'autor']);
+        Permission::create(['guard_name' => 'productos', 'name' => 'editor']);
+        Permission::create(['guard_name' => 'productos', 'name' => 'gestor']);
+
+        Permission::create(['guard_name' => 'clientes', 'name' => 'lector']);
+        Permission::create(['guard_name' => 'clientes', 'name' => 'autor']);
+        Permission::create(['guard_name' => 'clientes', 'name' => 'editor']);
+        Permission::create(['guard_name' => 'clientes', 'name' => 'gestor']);
+        Permission::create(['guard_name' => 'clientes', 'name' => 'credito']);
+
+        Permission::create(['guard_name' => 'usuarios', 'name' => 'lector']);
+        Permission::create(['guard_name' => 'usuarios', 'name' => 'autor']);
+        Permission::create(['guard_name' => 'usuarios', 'name' => 'editor']);
+        Permission::create(['guard_name' => 'usuarios', 'name' => 'gestor']);
     }
 }

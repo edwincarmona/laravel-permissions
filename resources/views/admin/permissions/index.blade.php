@@ -17,17 +17,19 @@
                 <thead>
                     <tr>
                         <th style="text-align:center;"><input type="checkbox" id="select-all" /></th>
+                        <th>@lang('global.permissions.fields.guard_name')</th>
                         <th>@lang('global.permissions.fields.name')</th>
                         <th>&nbsp;</th>
 
                     </tr>
                 </thead>
-                
+
                 <tbody>
                     @if (count($permissions) > 0)
                         @foreach ($permissions as $permission)
                             <tr data-entry-id="{{ $permission->id }}">
                                 <td></td>
+                                <td>{{ $permission->guard_name }}</td>
                                 <td>{{ $permission->name }}</td>
                                 <td>
                                     <a href="{{ route('admin.permissions.edit',[$permission->id]) }}" class="btn btn-xs btn-info">@lang('global.app_edit')</a>
@@ -53,7 +55,7 @@
     </div>
 @stop
 
-@section('javascript') 
+@section('javascript')
     <script>
         window.route_mass_crud_entries_destroy = '{{ route('admin.permissions.mass_destroy') }}';
     </script>
